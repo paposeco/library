@@ -6,8 +6,60 @@
     <link rel="stylesheet" href="styles/stylesheet.css" />
   </head>
   <body>
-    <h1>Book Collection</h1>
-    <div id="collection"></div>
+    <div id="currentcollection">
+      <h1>Book Collection</h1>
+      <div id="collection"></div>
+      <div id="bringformbutton">
+        <button id="bringform" type="button" name="bringform">
+          Add new book
+        </button>
+      </div>
+    </div>
+    <div id="formdiv">
+      <button id="closeform">x</button>
+      <form action="" method="get" class="addnewbookform" id="newbook">
+        <div class="addnewbookform">
+          <label for="title">Book Title:</label>
+          <input type="text" name="title" id="title" form="newbook" required />
+        </div>
+        <div class="addnewbookform">
+          <label for="author">Book Author:</label>
+          <input
+            type="text"
+            name="author"
+            id="author"
+            form="newbook"
+            required
+          />
+        </div>
+        <div class="addnewbookform">
+          <label for="pages">Number of Pages:</label>
+          <input
+            type="number"
+            name="pages"
+            id="pages"
+            form="newbook"
+            required
+          />
+        </div>
+        <div class="addnewbookform">
+          <label for="status">Status</label>
+          <select id="status" name="status" form="newbook" required>
+            <option value="read" selected>Read</option>
+            <option value="not read">Not Read</option>
+          </select>
+        </div>
+        <div class="addnewbookform">
+          <input
+            type="submit"
+            form="newbook"
+            id="addbookbutton"
+            name="addbookbutton"
+            value="Add book"
+          />
+        </div>
+      </form>
+    </div>
     <script src="bookconstructor.js"></script>
   </body>
 </html>
