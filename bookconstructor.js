@@ -23,51 +23,45 @@ const tombombadil = new bookInfo(
 const hyperion = new bookInfo("Hyperion", "Dan Simmons", "482", "read");
 
 let bookCollection = [hobbit, seveneves, tombombadil, hyperion];
-
-function addBookToLibrary(title, author, pages, status) {
-  let newBook = new bookInfo(title, author, pages, status);
-  bookCollection.push(newBook);
-  return bookCollection;
-}
-
 const collection = document.getElementById("collection");
 
 function displayCollection(array) {
   for (i = 0; i < array.length; i++) {
     const newUl = document.createElement("ul");
-    newUl.setAttribute("data-attribute", "book" + i);
+    newUl.setAttribute("id", "book" + i);
     collection.appendChild(newUl);
     let bookTitle = array[i].title;
     let bookAuthor = array[i].author;
     let bookPages = array[i].pages;
     let bookStatus = array[i].status;
-    createLi(newUl, bookTitle);
-    createLi(newUl, bookAuthor);
-    createLi(newUl, bookPages);
-    createLi(newUl, bookStatus);
+    createLi(newUl, bookTitle, i, "booktitle");
+    createLi(newUl, bookAuthor, i, "bookauthor");
+    createLi(newUl, bookPages, i, "bookpages");
+    createLi(newUl, bookStatus, i, "bookstatus");
     removeBookButton(i, newUl);
+    changeStatusButton(i, newUl, bookStatus);
   }
 }
 
-function addToCollection() {
+function addBookToCollection(title, author, pages, status) {
+  let newBook = new bookInfo(title, author, pages, status);
+  bookCollection.push(newBook);
+  let currentIndex = bookCollection.length - 1;
   const newUl = document.createElement("ul");
-  newUl.setAttribute("data-attribute", "book" + (bookCollection.length - 1));
+  newUl.setAttribute("id", "book" + currentIndex);
   collection.appendChild(newUl);
-  let bookTitle = bookCollection[bookCollection.length - 1].title;
-  let bookAuthor = bookCollection[bookCollection.length - 1].author;
-  let bookPages = bookCollection[bookCollection.length - 1].pages;
-  let bookStatus = bookCollection[bookCollection.length - 1].status;
-  createLi(newUl, bookTitle);
-  createLi(newUl, bookAuthor);
-  createLi(newUl, bookPages);
-  createLi(newUl, bookStatus);
-  removeBookButton(bookCollection.length - 1, newUl);
+  createLi(newUl, newBook.title, currentIndex, "booktitle");
+  createLi(newUl, newBook.author, currentIndex, "bookauthor");
+  createLi(newUl, newBook.pages, currentIndex, "bookpages");
+  createLi(newUl, newBook.status, currentIndex, "bookstatus");
+  removeBookButton(currentIndex, newUl);
+  changeStatusButton(currentIndex, newUl, newBook.status);
 }
 
 function removeBookButton(index, newUl) {
   const newButton = document.createElement("button");
   newButton.textContent = "Remove Book";
-  let currentID = "book" + index;
+  let currentID = "bookremoval" + index;
   newButton.setAttribute("id", currentID);
   newButton.setAttribute("name", currentID);
   newButton.setAttribute("class", "bookRemoval");
@@ -79,26 +73,63 @@ function removeBookButton(index, newUl) {
   });
 }
 
-function createLi(newUl, information) {
+function createLi(newUl, information, i, typelististem) {
   const newListItem = document.createElement("li");
   newListItem.textContent = information;
+  newListItem.setAttribute("data-" + typelististem, typelististem + i);
   return newUl.appendChild(newListItem);
 }
-window.onload = displayCollection(bookCollection);
+
+function changeStatusButton(index, newUl, bookstatus) {
+  const newButton = document.createElement("button");
+  let currentID = "markasread" + index;
+  newButton.setAttribute("id", currentID);
+  newButton.setAttribute("name", currentID);
+  newButton.setAttribute("class", "changestatus");
+  if (bookstatus === "Status: not read") {
+    newButton.textContent = "Mark as read";
+  } else {
+    newButton.textContent = "Mark as not read";
+  }
+  newUl.appendChild(newButton);
+  newButton.addEventListener("click", function (event) {
+    changeStatus(event, index);
+  });
+}
+
+function changeStatus(event, index) {
+  bookStatus = bookCollection[index].status;
+  if (bookStatus === "Status: not read") {
+    bookCollection[index].status = "Status: read";
+    const currentBookList = document.getElementById("book" + index);
+    const currentBookListItemStatus = currentBookList.querySelector(
+      "[data-bookstatus]"
+    );
+    currentBookListItemStatus.textContent = "Status: read";
+    event.target.textContent = "Mark as not read";
+  } else {
+    bookCollection[index].status = "Status: not read";
+    const currentBookList = document.getElementById("book" + index);
+    const currentBookListItemStatus = currentBookList.querySelector(
+      "[data-bookstatus]"
+    );
+    currentBookListItemStatus.textContent = "Status: not read";
+    event.target.textContent = "Mark as read";
+  }
+}
 
 const formDiv = document.getElementById("formdiv");
 const showFormButton = document.getElementById("bringform");
 const showFormDiv = document.getElementById("bringformbutton");
 const addbookButton = document.getElementById("addbookbutton");
-
 const inputTitle = document.getElementById("title");
 const inputAuthor = document.getElementById("author");
 const inputPages = document.getElementById("pages");
 const inputStatus = document.getElementById("status");
 const form = document.getElementById("newbook");
-const allInputs = document.querySelectorAll("input");
 const closeForm = document.getElementById("closeform");
-const bookRemoval = document.querySelectorAll(".bookRemoval");
+
+window.onload = displayCollection(bookCollection);
 
 showFormButton.addEventListener("click", function (event) {
   formDiv.style.visibility = "visible";
@@ -106,12 +137,12 @@ showFormButton.addEventListener("click", function (event) {
 });
 
 addbookButton.addEventListener("click", function (event) {
-  let bookTitle = inputTitle.value;
-  let bookAuthor = inputAuthor.value;
-  let bookPages = inputPages.value;
-  let bookStatus = inputStatus.value;
-  addBookToLibrary(bookTitle, bookAuthor, bookPages, bookStatus);
-  addToCollection();
+  addBookToCollection(
+    inputTitle.value,
+    inputAuthor.value,
+    inputPages.value,
+    inputStatus.value
+  );
   formDiv.style.visibility = "hidden";
   showFormDiv.style.visibility = "visible";
   form.reset();
@@ -123,11 +154,3 @@ closeForm.addEventListener("click", function (event) {
   formDiv.style.visibility = "hidden";
   showFormDiv.style.visibility = "visible";
 });
-
-// bookRemoval.forEach(function (button) {
-//   button.addEventListener("click", function (target) {
-//     let buttonID = target.id;
-//     let arrayIndex = buttonID.split(5);
-//     console.log(arrayIndex);
-//   });
-// });
