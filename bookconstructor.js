@@ -40,10 +40,11 @@ function displayCollection(array) {
     createLi(newUl, bookStatus, i, "bookstatus");
     removeBookButton(i, newUl);
     changeStatusButton(i, newUl, bookStatus);
+    populateStorage(array, i);
   }
 }
 
-function addBookToCollection(title, author, pages, status) {
+function addBookToCollection(title, author, pages, status, booksource) {
   let newBook = new bookInfo(title, author, pages, status);
   bookCollection.push(newBook);
   let currentIndex = bookCollection.length - 1;
@@ -56,6 +57,9 @@ function addBookToCollection(title, author, pages, status) {
   createLi(newUl, newBook.status, currentIndex, "bookstatus");
   removeBookButton(currentIndex, newUl);
   changeStatusButton(currentIndex, newUl, newBook.status);
+  if (booksource === "newbook") {
+    populateStorage(bookCollection, currentIndex);
+  }
 }
 
 function removeBookButton(index, newUl) {
@@ -70,7 +74,15 @@ function removeBookButton(index, newUl) {
     bookCollection.splice(index, 1);
     collection.innerHTML = "";
     displayCollection(bookCollection);
+    removeItemLocalStorage(index);
   });
+}
+
+function removeItemLocalStorage(index) {
+  localStorage.removeItem("title" + i);
+  localStorage.removeItem("author" + i);
+  localStorage.removeItem("pages" + i);
+  localStorage.removeItem("status" + i);
 }
 
 function createLi(newUl, information, i, typelististem) {
@@ -107,6 +119,7 @@ function changeStatus(event, index) {
     );
     currentBookListItemStatus.textContent = "Status: read";
     event.target.textContent = "Mark as not read";
+    localStorage.setItem("status" + index, "read");
   } else {
     bookCollection[index].status = "Status: not read";
     const currentBookList = document.getElementById("book" + index);
@@ -115,13 +128,14 @@ function changeStatus(event, index) {
     );
     currentBookListItemStatus.textContent = "Status: not read";
     event.target.textContent = "Mark as read";
+    const storageStatus = "status" + index;
+    localStorage.setItem("status" + index, "not read");
   }
 }
 
 const formDiv = document.getElementById("formdiv");
 const showFormButton = document.getElementById("bringform");
 const showFormDiv = document.getElementById("bringformbutton");
-const addbookButton = document.getElementById("addbookbutton");
 const inputTitle = document.getElementById("title");
 const inputAuthor = document.getElementById("author");
 const inputPages = document.getElementById("pages");
@@ -129,24 +143,30 @@ const inputStatus = document.getElementById("status");
 const form = document.getElementById("newbook");
 const closeForm = document.getElementById("closeform");
 
-window.onload = displayCollection(bookCollection);
+window.onload = function () {
+  displayCollection(bookCollection);
+  console.log(bookCollection);
+  localStorageCheck();
+  console.log(bookCollection);
+};
 
 showFormButton.addEventListener("click", function (event) {
   formDiv.style.visibility = "visible";
   showFormDiv.style.visibility = "hidden";
 });
 
-addbookButton.addEventListener("click", function (event) {
+form.addEventListener("submit", function (event) {
   addBookToCollection(
     inputTitle.value,
     inputAuthor.value,
     inputPages.value,
-    inputStatus.value
+    inputStatus.value,
+    "newbook"
   );
   formDiv.style.visibility = "hidden";
   showFormDiv.style.visibility = "visible";
   form.reset();
-  event.preventDefault(); //it would refresh after submitting without this
+  event.preventDefault();
 });
 
 closeForm.addEventListener("click", function (event) {
@@ -154,3 +174,33 @@ closeForm.addEventListener("click", function (event) {
   formDiv.style.visibility = "hidden";
   showFormDiv.style.visibility = "visible";
 });
+
+function populateStorage(array, index) {
+  localStorage.setItem("title" + index, array[index].title);
+  localStorage.setItem("author" + index, array[index].author);
+  localStorage.setItem("pages" + index, array[index].pages);
+  localStorage.setItem("status" + index, array[index].status);
+}
+
+function localStorageCheck() {
+  if (localStorage.length > 16) {
+    const initalBookCollection = bookCollection.length;
+    const completeCollection = Number(localStorage.length / 4);
+    //const newBooks = completeCollection-initalBookCollection;
+    for (i = initalBookCollection; i < completeCollection; i++) {
+      let bookTitle = localStorage.getItem("title" + i);
+      let bookAuthor = localStorage.getItem("author" + i);
+      let bookPages = localStorage.getItem("pages" + i).slice(7);
+      let bookStatus = localStorage.getItem("status" + i).slice(8);
+      addBookToCollection(
+        bookTitle,
+        bookAuthor,
+        bookPages,
+        bookStatus,
+        "fromstorage"
+      );
+    }
+  } else {
+    return;
+  }
+}
