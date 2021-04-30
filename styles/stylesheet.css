@@ -8,8 +8,13 @@ body {
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
-  gap: 20px;
+  /* gap: 20px; */
+  min-height: 50vh;
   flex-wrap: wrap;
+}
+
+.book {
+  width: 25%;
 }
 
 ul {
@@ -18,16 +23,61 @@ ul {
   justify-content: center;
   gap: 20px;
   margin: 20px;
-  width: 25%;
-  padding-left: 0;
+  padding: 10px;
+}
+
+[data-booktitle] {
+  text-align: left;
+  border-bottom: 1px darkgreen dotted;
+  font-size: 18px;
+  font-weight: bolder;
+  height: 50px;
+  align-items: center;
+}
+
+[data-bookauthor],
+[data-bookpages],
+[data-bookstatus] {
+  display: none;
+}
+
+[data-booktitle]::after {
+  content: "\00BB";
+  display: inline-block;
+  transform: rotate(90deg) translateY(-10px);
+}
+
+.visibleClass {
+  display: flex;
+}
+
+.visibleClass[data-booktitle]::after {
+  content: "\00BB";
+  display: inline-block;
+  transform: rotate(270deg) translateY(10px);
+  /* content: "\21A5"; */
 }
 
 li {
   list-style: none;
-  width: 100%;
-  align-self: center;
-  border: 1px solid green;
+  width: 90%;
+  /* align-self: center; */
   padding: 10px;
+  line-height: 1em;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+li > span {
+  flex-grow: 1;
+  min-width: 45px;
+}
+
+ul > div {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
 }
 
 #formdiv {
@@ -56,4 +106,20 @@ li {
   flex-direction: column;
   height: 80vh;
   margin-top: 10vh;
+}
+
+.bookRemoval:hover {
+  cursor: pointer;
+}
+
+.statusRead {
+  color: green;
+  margin-left: 10px;
+  font-size: 20px;
+}
+
+.statusNot {
+  margin-left: 20px;
+  color: red;
+  font-size: 10px;
 }
