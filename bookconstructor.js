@@ -102,6 +102,7 @@ function addBookToCollection(title, author, pages, status, booksource) {
   if (booksource === "newbook") {
     populateStorage(bookCollection, currentIndex);
   }
+  numberofbooks(bookCollection.length);
 }
 
 function removeBookButton(index, newDiv) {
@@ -168,7 +169,8 @@ function changeStatus(event, index) {
     span.textContent = "read";
     span.classList.remove("statusNot");
     span.classList.add("statusRead");
-    localStorage.setItem("status" + index, "read");
+    const storageStatusNot = "status" + index;
+    localStorage.setItem(storageStatusNot, "Status: read");
   } else {
     bookCollection[index].status = "Status: not read";
     const currentBookList = document.getElementById("book" + index);
@@ -182,7 +184,7 @@ function changeStatus(event, index) {
     span.classList.remove("statusRead");
     span.classList.add("statusNot");
     const storageStatus = "status" + index;
-    localStorage.setItem("status" + index, "not read");
+    localStorage.setItem(storageStatus, "Status: not read");
   }
 }
 
@@ -194,7 +196,8 @@ function populateStorage(array, index) {
 }
 
 function localStorageCheck() {
-  if (localStorage.length > 16) {
+  if (localStorage.length > 24) {
+    // initial storage
     const initalBookCollection = bookCollection.length;
     const completeCollection = Number(localStorage.length / 4);
     for (i = initalBookCollection; i < completeCollection; i++) {
@@ -210,7 +213,9 @@ function localStorageCheck() {
         "fromstorage"
       );
     }
+    numberofbooks(completeCollection);
   } else {
+    numberofbooks(bookCollection.length);
     return;
   }
 }
@@ -236,6 +241,15 @@ function hideLi(titleLi) {
       span.classList.add("statusNot");
     }
     span.textContent = bookStatus;
+    span.addEventListener("click", function (event) {
+      const bookId = "book" + bookIndex;
+      const listUl = document.getElementById(bookId);
+      let li = listUl.childNodes;
+      li.forEach(function (element) {
+        let classes = element.classList;
+        classes.toggle("visibleClass");
+      });
+    });
     title.appendChild(span);
   });
 }
@@ -249,11 +263,6 @@ const inputPages = document.getElementById("pages");
 const inputStatus = document.getElementById("status");
 const form = document.getElementById("newbook");
 const closeForm = document.getElementById("closeform");
-
-window.onload = function () {
-  const titleLi = document.querySelectorAll("[data-booktitle]");
-  hideLi(titleLi);
-};
 
 showFormButton.addEventListener("click", function (event) {
   formDiv.style.visibility = "visible";
@@ -280,5 +289,30 @@ closeForm.addEventListener("click", function (event) {
   showFormDiv.style.visibility = "visible";
 });
 
+const litotal = document.getElementById("totalnumberofbooks");
+const liread = document.getElementById("numberreadbooks");
+const liunread = document.getElementById("numberofunreadbooks");
+
+function numberofbooks(arraylength) {
+  let read = 0;
+  let unread = 0;
+  bookCollection.forEach(function (obj) {
+    if (obj.status === "Status: read") {
+      read += 1;
+    } else {
+      unread += 1;
+    }
+  });
+  let numberofbooks = arraylength;
+  litotal.textContent = "Number of books: " + numberofbooks;
+  liread.textContent = "Books read: " + read;
+  liunread.textContent = "Want to read: " + unread;
+}
+console.log(bookCollection);
 displayCollection(bookCollection);
-localStorageCheck();
+
+window.onload = function () {
+  const titleLi = document.querySelectorAll("[data-booktitle]");
+  hideLi(titleLi);
+  localStorageCheck();
+};
