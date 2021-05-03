@@ -12,45 +12,30 @@ function bookInfo(title, author, pages, status) {
   };
 }
 
-const hobbit = new bookInfo("The Hobbit", "J.R.R. Tolkien", "295", "not read");
+const hobbit = new bookInfo("The Hobbit", "J.R.R. Tolkien", "295", "read");
 const seveneves = new bookInfo("Seveneves", " Neal Stephenson", "880", "read");
-const tombombadil = new bookInfo(
-  "The Adventures of Tom Bombadil",
-  "J.R.R. Tolkien",
-  "75",
+const elantris = new bookInfo("Elantris", "Brandon Sanderson", "638", "read");
+const hyperion = new bookInfo("Hyperion", "Dan Simmons", "482", "read");
+const thehumancondition = new bookInfo(
+  "The Human Condition",
+  "Hannah Arendt",
+  "349",
   "not read"
 );
-const hyperion = new bookInfo("Hyperion", "Dan Simmons", "482", "read");
+const thebelljar = new bookInfo(
+  "The Bell Jar",
+  "Sylvia Plath",
+  "249",
+  "not read"
+);
 
 let bookCollection = [
   hobbit,
   seveneves,
-  tombombadil,
+  thehumancondition,
+  elantris,
   hyperion,
-  hobbit,
-  seveneves,
-  tombombadil,
-  hyperion,
-  hobbit,
-  seveneves,
-  tombombadil,
-  hyperion,
-  hobbit,
-  seveneves,
-  tombombadil,
-  hyperion,
-  tombombadil,
-  hyperion,
-  hobbit,
-  seveneves,
-  tombombadil,
-  hyperion,
-  tombombadil,
-  hyperion,
-  hobbit,
-  seveneves,
-  tombombadil,
-  hyperion,
+  thebelljar,
 ];
 const collection = document.getElementById("collection");
 
@@ -71,6 +56,7 @@ function displayCollection(array) {
     createLi(newUl, bookPages, i, "bookpages");
     createLi(newUl, bookStatus, i, "bookstatus");
     const newDiv = document.createElement("div");
+    newDiv.classList.add("bookButtons");
     newUl.appendChild(newDiv);
     removeBookButton(i, newDiv);
     changeStatusButton(i, newDiv, bookStatus);
@@ -101,6 +87,7 @@ function addBookToCollection(title, author, pages, status, booksource) {
   span.textContent = newBook.status.slice(8);
   liTitle.appendChild(span);
   const newDiv = document.createElement("div");
+  newDiv.classList.add("bookButtons");
   newUl.appendChild(newDiv);
   removeBookButton(currentIndex, newDiv);
   changeStatusButton(currentIndex, newDiv, newBook.status);

@@ -4,62 +4,94 @@
     <meta charset="utf-8" />
     <title>Book Library</title>
     <link rel="stylesheet" href="styles/stylesheet.css" />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://fonts.googleapis.com/css?family=VT323"
+    />
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.9.0/css/all.css"
+      integrity="sha384-i1LQnF23gykqWXg6jxC2ZbCbUMxyw5gLZY6UiUS98LYV5unm8GWmfkIS6jqJfb4E"
+      crossorigin="anonymous"
+    />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
   </head>
   <body>
-    <div id="currentcollection">
-      <h1>Book Collection</h1>
-      <button id="bringform" type="button" name="bringform">
-        Add new book
-      </button>
-      <div id="collection"></div>
-      <div id="bringformbutton"></div>
-    </div>
-    <div id="formdiv">
-      <button id="closeform">x</button>
-      <form action="" method="get" class="addnewbookform" id="newbook">
-        <div class="addnewbookform">
-          <label for="title">Book Title:</label>
-          <input type="text" name="title" id="title" form="newbook" required />
-        </div>
-        <div class="addnewbookform">
-          <label for="author">Book Author:</label>
-          <input
-            type="text"
-            name="author"
-            id="author"
-            form="newbook"
-            required
-          />
-        </div>
-        <div class="addnewbookform">
-          <label for="pages">Number of Pages:</label>
-          <input
-            type="number"
-            name="pages"
-            id="pages"
-            form="newbook"
-            required
-          />
-        </div>
-        <div class="addnewbookform">
-          <label for="status">Status</label>
-          <select id="status" name="status" form="newbook" required>
-            <option value="read" selected>Read</option>
-            <option value="not read">Not Read</option>
-          </select>
-        </div>
-        <div class="addnewbookform">
-          <button
-            type="submit"
-            form="newbook"
-            id="addbookbutton"
-            name="addbookbutton"
-          >
-            Add book
+    <div id="teste">
+      <div id="currentcollection">
+        <div id="header">
+          <h1>Book Collection</h1>
+          <button id="bringform" type="button" name="bringform">
+            Add new book
           </button>
         </div>
-      </form>
+        <div id="collection"></div>
+        <div id="bringformbutton"></div>
+      </div>
+      <div id="formdiv">
+        <div id="closeformdiv">
+          <h2>Add new book</h2>
+          <button id="closeform" title="Close form">x</button>
+        </div>
+        <form action="" method="get" class="addnewbookform" id="newbook">
+          <div class="addnewbookform requiredtag">
+            <label for="title">Book Title:</label>
+            <input
+              type="text"
+              name="title"
+              id="title"
+              form="newbook"
+              required
+            />
+          </div>
+          <div class="addnewbookform requiredtag">
+            <label for="author">Book Author:</label>
+            <input
+              type="text"
+              name="author"
+              id="author"
+              form="newbook"
+              required
+            />
+          </div>
+          <div class="addnewbookform requiredtag">
+            <label for="pages">Number of Pages:</label>
+            <input
+              type="number"
+              name="pages"
+              id="pages"
+              form="newbook"
+              required
+            />
+          </div>
+          <div class="addnewbookform">
+            <label for="status">Status</label>
+            <select id="status" name="status" form="newbook" required>
+              <option value="read" selected>Read</option>
+              <option value="not read">Not Read</option>
+            </select>
+          </div>
+          <div class="addnewbookform" id="addnewbookformbutton">
+            <button
+              type="submit"
+              form="newbook"
+              id="addbookbutton"
+              name="addbookbutton"
+            >
+              Add book
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
+    <footer>
+      <p>
+        <a href="https://github.com/paposeco/" alt="github">
+          <span><i class="fab fa-github"></i></span>Fabi</a
+        >
+      </p>
+    </footer>
     <script src="bookconstructor.js"></script>
   </body>
 </html>
