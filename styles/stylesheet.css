@@ -60,7 +60,7 @@ ul {
 [data-bookpages],
 [data-bookstatus] {
   display: none;
-  font-family: Arial Narrow, Arial, sans-serif;
+  font-family: Fjord One;
   font-size: 18px;
 }
 
@@ -70,6 +70,10 @@ ul {
   transform: rotate(90deg) translateY(-10px);
 }
 
+[data-booktitle]:hover {
+  cursor: pointer;
+}
+
 .visibleClass {
   display: flex;
 }
@@ -77,7 +81,7 @@ ul {
 .visibleClass[data-booktitle]::after {
   content: "\00BB";
   display: inline-block;
-  transform: rotate(270deg) translateY(10px);
+  transform: rotate(270deg) translateY(5px);
   /* content: "\21A5"; */
 }
 
@@ -101,7 +105,7 @@ button {
   border: 1px solid #e9f198;
   box-shadow: 1px 1px 1px #fcfdf1, inset 1px 1px 1px #fcfdf1;
   font-size: 14px;
-  font-family: Arial Narrow, Arial, sans-serif;
+  font-family: Fjord One;
 }
 
 button:hover {
@@ -180,6 +184,10 @@ form {
   flex-direction: column;
   /* height: 80vh; */
   margin-top: 10vh;
+}
+
+.bookRemoval {
+  font-size: 18px;
 }
 
 .bookRemoval:hover {

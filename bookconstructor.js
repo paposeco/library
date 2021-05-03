@@ -106,7 +106,7 @@ function addBookToCollection(title, author, pages, status, booksource) {
 
 function removeBookButton(index, newDiv) {
   const newButton = document.createElement("button");
-  newButton.textContent = "X";
+  newButton.textContent = "×";
   let currentID = "bookremoval" + index;
   newButton.setAttribute("id", currentID);
   newButton.setAttribute("name", currentID);
