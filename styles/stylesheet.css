@@ -1,5 +1,5 @@
 html {
-  background: repeat-y url("../images/wallpaper3.jpg") center top, #eef4ae;
+  background: repeat-y url("images/wallpaper3.jpg") center top, #eef4ae;
 }
 
 body {
@@ -13,7 +13,7 @@ body {
   min-height: 95vh;
 }
 
-#teste {
+#formheader {
   flex-grow: 1;
 }
 
