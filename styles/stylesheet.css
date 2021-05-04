@@ -97,7 +97,7 @@ li {
   padding: 10px;
   line-height: 1em;
   display: flex;
-  flex-direction: row;
+  flex-dirction: row;
   justify-content: space-between;
 }
 
@@ -296,6 +296,48 @@ footer a:visited {
   /* color: #d2e228; */
   text-shadow: 1px 1px 1px grey;
   font-size: 30px;
+}
+
+#projectinfo {
+  visibility: hidden;
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background-color: #f9fbe6;
+  width: 220px;
+  height: 80px;
+  padding: 20px;
+}
+
+#closeinfo {
+  visibility: hidden;
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  /* background-color: #f9fbe6; */
+  width: 14px;
+  /* border: solid 1px black; */
+  padding: 0;
+  text-align: center;
+  background-color: #e5ee81;
+  border: 1px solid #e0eb6b;
+  box-shadow: 1px 1px 1px #fcfdf1, inset 1px 1px 1px #fcfdf1;
+}
+
+#closeinfo:hover {
+  cursor: pointer;
+  background-color: #e0eb6b;
+}
+
+#buttoni {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  color: #e5ee81;
+}
+
+#buttoni:hover {
+  cursor: pointer;
 }
 
 @media screen and (max-width: 801px) {

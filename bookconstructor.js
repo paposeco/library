@@ -292,6 +292,21 @@ closeForm.addEventListener("click", function (event) {
 const litotal = document.getElementById("totalnumberofbooks");
 const liread = document.getElementById("numberreadbooks");
 const liunread = document.getElementById("numberofunreadbooks");
+const buttoni = document.getElementById("buttoni");
+const paraProjectInfo = document.getElementById("projectinfo");
+const paraProjectInfoClose = document.getElementById("closeinfo");
+
+buttoni.addEventListener("click", function () {
+  paraProjectInfo.style.visibility = "visible";
+  paraProjectInfoClose.style.visibility = "visible";
+  buttoni.style.visibility = "hidden";
+});
+
+paraProjectInfoClose.addEventListener("click", function () {
+  paraProjectInfo.style.visibility = "hidden";
+  paraProjectInfoClose.style.visibility = "hidden";
+  buttoni.style.visibility = "visible";
+});
 
 function numberofbooks(arraylength) {
   let read = 0;
