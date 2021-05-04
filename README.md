@@ -1,6 +1,6 @@
 # Book Library for The Odin Project
 
-The web app let's keep track of your book collection. There are 6 books as examples of how the titles are displayed. On each book, you can add information on the name of the author, the number the pages and whether or not you have read the book. The collection is saved locally.
+This web app lets you keep track of your book collection. There are 6 books as examples of how the titles are displayed. On each book, you can add information on the name of the author, the number the pages and whether or not you have read the book. The collection is saved locally.
 
 ## Notes
 
