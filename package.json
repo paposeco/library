@@ -1,0 +1,31 @@
+{
+  "name": "library",
+  "version": "1.0.0",
+  "description": "This web app lets you keep track of your book collection. There are 6 books as examples of how the titles are displayed. On each book, you can add information on the name of the author, the number the pages and whether or not you have read the book. The collection is saved locally.",
+  "private": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack",
+    "watch": "webpack --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/paposeco/library.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/paposeco/library/issues"
+  },
+  "homepage": "https://github.com/paposeco/library#readme",
+  "devDependencies": {
+    "css-loader": "^6.5.0",
+    "style-loader": "^3.3.1",
+    "webpack": "^5.61.0",
+    "webpack-cli": "^4.9.1"
+  },
+  "dependencies": {
+    "firebase": "^9.2.0"
+  }
+}
