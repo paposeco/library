@@ -1,17 +1,4 @@
 import "./styles/stylesheet.css";
-import { initializeApp } from "firebase/app";
-
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-const firebaseConfig = {
-  apiKey: "AIzaSyAWgyV7syIIbKPZIMoHIU1M91jJ4ukwBUA",
-  authDomain: "library-2ac65.firebaseapp.com",
-  projectId: "library-2ac65",
-  storageBucket: "library-2ac65.appspot.com",
-  messagingSenderId: "1009268868829",
-  appId: "1:1009268868829:web:3a2eb5ea4df6764ad27d34",
-};
 
 function bookInfo(title, author, pages, status) {
   this.title = title;
@@ -175,8 +162,9 @@ function changeStatus(event, index) {
   if (bookStatus === "Status: not read") {
     bookCollection[index].status = "Status: read";
     const currentBookList = document.getElementById("book" + index);
-    const currentBookListItemStatus =
-      currentBookList.querySelector("[data-bookstatus]");
+    const currentBookListItemStatus = currentBookList.querySelector(
+      "[data-bookstatus]"
+    );
     const span = currentBookList.querySelector("span");
     currentBookListItemStatus.textContent = "Status: read";
     event.target.textContent = "Mark as not read";
@@ -188,8 +176,9 @@ function changeStatus(event, index) {
   } else {
     bookCollection[index].status = "Status: not read";
     const currentBookList = document.getElementById("book" + index);
-    const currentBookListItemStatus =
-      currentBookList.querySelector("[data-bookstatus]");
+    const currentBookListItemStatus = currentBookList.querySelector(
+      "[data-bookstatus]"
+    );
     const span = currentBookList.querySelector("span");
     currentBookListItemStatus.textContent = "Status: not read";
     event.target.textContent = "Mark as read";
@@ -267,59 +256,59 @@ function hideLi(titleLi) {
   });
 }
 
-const formDiv = document.getElementById("formdiv");
-const showFormButton = document.getElementById("bringform");
-const showFormDiv = document.getElementById("bringformbutton");
-const inputTitle = document.getElementById("title");
-const inputAuthor = document.getElementById("author");
-const inputPages = document.getElementById("pages");
-const inputStatus = document.getElementById("status");
-const form = document.getElementById("newbook");
-const closeForm = document.getElementById("closeform");
+// const formDiv = document.getElementById("formdiv");
+// const showFormButton = document.getElementById("bringform");
+// const showFormDiv = document.getElementById("bringformbutton");
+// const inputTitle = document.getElementById("title");
+// const inputAuthor = document.getElementById("author");
+// const inputPages = document.getElementById("pages");
+// const inputStatus = document.getElementById("status");
+// const form = document.getElementById("newbook");
+// const closeForm = document.getElementById("closeform");
 
-showFormButton.addEventListener("click", function (event) {
-  formDiv.style.visibility = "visible";
-  showFormDiv.style.visibility = "hidden";
-});
+// showFormButton.addEventListener("click", function (event) {
+//   formDiv.style.visibility = "visible";
+//   showFormDiv.style.visibility = "hidden";
+// });
 
-form.addEventListener("submit", function (event) {
-  addBookToCollection(
-    inputTitle.value,
-    inputAuthor.value,
-    inputPages.value,
-    inputStatus.value,
-    "newbook"
-  );
-  formDiv.style.visibility = "hidden";
-  showFormDiv.style.visibility = "visible";
-  form.reset();
-  event.preventDefault();
-});
+// form.addEventListener("submit", function (event) {
+//   addBookToCollection(
+//     inputTitle.value,
+//     inputAuthor.value,
+//     inputPages.value,
+//     inputStatus.value,
+//     "newbook"
+//   );
+//   formDiv.style.visibility = "hidden";
+//   showFormDiv.style.visibility = "visible";
+//   form.reset();
+//   event.preventDefault();
+// });
 
-closeForm.addEventListener("click", function (event) {
-  form.reset();
-  formDiv.style.visibility = "hidden";
-  showFormDiv.style.visibility = "visible";
-});
+// closeForm.addEventListener("click", function (event) {
+//   form.reset();
+//   formDiv.style.visibility = "hidden";
+//   showFormDiv.style.visibility = "visible";
+// });
 
 const litotal = document.getElementById("totalnumberofbooks");
 const liread = document.getElementById("numberreadbooks");
 const liunread = document.getElementById("numberofunreadbooks");
-const buttoni = document.getElementById("buttoni");
-const paraProjectInfo = document.getElementById("projectinfo");
-const paraProjectInfoClose = document.getElementById("closeinfo");
+// const buttoni = document.getElementById("buttoni");
+// const paraProjectInfo = document.getElementById("projectinfo");
+// const paraProjectInfoClose = document.getElementById("closeinfo");
 
-buttoni.addEventListener("click", function () {
-  paraProjectInfo.style.visibility = "visible";
-  paraProjectInfoClose.style.visibility = "visible";
-  buttoni.style.visibility = "hidden";
-});
+// buttoni.addEventListener("click", function () {
+//   paraProjectInfo.style.visibility = "visible";
+//   paraProjectInfoClose.style.visibility = "visible";
+//   buttoni.style.visibility = "hidden";
+// });
 
-paraProjectInfoClose.addEventListener("click", function () {
-  paraProjectInfo.style.visibility = "hidden";
-  paraProjectInfoClose.style.visibility = "hidden";
-  buttoni.style.visibility = "visible";
-});
+// paraProjectInfoClose.addEventListener("click", function () {
+//   paraProjectInfo.style.visibility = "hidden";
+//   paraProjectInfoClose.style.visibility = "hidden";
+//   buttoni.style.visibility = "visible";
+// });
 
 function numberofbooks(arraylength) {
   let read = 0;
@@ -336,6 +325,8 @@ function numberofbooks(arraylength) {
   liread.textContent = "Books read: " + read;
   liunread.textContent = "Want to read: " + unread;
 }
+
+// this should be on index.js
 displayCollection(bookCollection);
 
 window.onload = function () {

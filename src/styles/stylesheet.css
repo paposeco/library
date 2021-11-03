@@ -340,6 +340,26 @@ footer a:visited {
   cursor: pointer;
 }
 
+#userdiv {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  height: 50px;
+  align-items: center;
+  margin-top: 5px;
+}
+
+#userdiv button {
+  height: 25px;
+}
+
+#profile {
+  display: flex;
+  flex-direction: row;
+  height: 50px;
+  gap: 10px;
+}
+
 @media screen and (max-width: 801px) {
   html {
     background: repeat-y url("../images/wallpaper4.jpg") center top, #eef4ae;

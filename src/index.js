@@ -77,9 +77,6 @@ closeForm.addEventListener("click", function (event) {
   showFormDiv.style.visibility = "visible";
 });
 
-const litotal = document.getElementById("totalnumberofbooks");
-const liread = document.getElementById("numberreadbooks");
-const liunread = document.getElementById("numberofunreadbooks");
 const buttoni = document.getElementById("buttoni");
 const paraProjectInfo = document.getElementById("projectinfo");
 const paraProjectInfoClose = document.getElementById("closeinfo");
@@ -96,24 +93,82 @@ paraProjectInfoClose.addEventListener("click", function () {
   buttoni.style.visibility = "visible";
 });
 
+const app = initializeApp(firebaseConfig);
+
+const auth = getAuth();
 const signIn = async function () {
   const provider = new GoogleAuthProvider();
-  await signInWithPopup(getAuth(), provider);
+  await signInWithPopup(auth, provider);
 };
 
 const signOutUser = function () {
-  signOut(getAuth());
+  signOut(auth);
 };
 
-//check if user is loggedin
+//tracks login in changes
 function initFirebaseAuth() {
-  onAuthStateChanged(getAuth(), authStateObserver);
+  onAuthStateChanged(auth, authStateObserver);
 }
 
-const signinbutton = document.getElementById("signin");
-signinbutton.addEventListener("click", signIn);
+const signinbutton = document.getElementById("authentication");
+signinbutton.addEventListener("click", function () {
+  if (auth.currentUser === null) {
+    signIn();
+  } else {
+    signOutUser();
+  }
+});
+
+const authStateObserver = function (user) {
+  //signed in
+  const profileDiv = document.getElementById("profile");
+  if (user) {
+    profileDiv.removeAttribute("hidden");
+    signinbutton.textContent = "Sign Out";
+    const namediv = document.createElement("p");
+    namediv.textContent = getUserName();
+    const profilephoto = document.createElement("img");
+    profilephoto.src = getProfilePicUrl();
+    profilephoto.alt = "profile pic";
+    profileDiv.appendChild(profilephoto);
+    profileDiv.appendChild(namediv);
+  } else {
+    signinbutton.textContent = "Sign In";
+    profileDiv.setAttribute("hidden", "true");
+  }
+};
+
+// Returns the signed-in user's profile Pic URL.
+function getProfilePicUrl() {
+  return getAuth().currentUser.photoURL || "/images/profile_placeholder.png";
+}
+
+// Returns the signed-in user's display name.
+function getUserName() {
+  return getAuth().currentUser.displayName;
+}
+
+// Returns true if a user is signed-in.
+// not used yet
+function isUserSignedIn() {
+  return !!getAuth().currentUser;
+}
+
+// const auth = getAuth();
+// onAuthStateChanged(auth, (user) => {
+//   if (user) {
+//     // User is signed in, see docs for a list of available properties
+//     // https://firebase.google.com/docs/reference/js/firebase.User
+//     const uid = user.uid;
+//     // ...
+//   } else {
+//     // User is signed out
+//     // ...
+//   }
+// });
+
 //if logged in saves to cloud, else saves to local storage
 
-const app = initializeApp(firebaseConfig);
-
 // fazer um signout. o texto do botao tem de mudar quando o user esta loggedin
+
+initFirebaseAuth();
