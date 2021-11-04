@@ -1,5 +1,5 @@
 //import "./styles/stylesheet.css";
-import { isUserSignedIn, saveBook } from "./index.js";
+import { isUserSignedIn, saveBook, removeBookFromDB } from "./index.js";
 
 function bookInfo(title, author, pages, status) {
   this.title = title;
@@ -41,13 +41,14 @@ const thebelljar = new bookInfo(
 //   thebelljar,
 // ];
 let bookCollection = [];
-const collection = document.getElementById("collection");
+const collectiondiv = document.getElementById("collection");
 
 function displayCollection(array) {
+  const signedIn = isUserSignedIn();
   for (let i = 0; i < array.length; i++) {
     const newDivOut = document.createElement("div");
     newDivOut.classList.add("book");
-    collection.appendChild(newDivOut);
+    collectiondiv.appendChild(newDivOut);
     const newUl = document.createElement("ul");
     newUl.setAttribute("id", "book" + i);
     newDivOut.appendChild(newUl);
@@ -64,7 +65,10 @@ function displayCollection(array) {
     newUl.appendChild(newDiv);
     removeBookButton(i, newDiv);
     changeStatusButton(i, newDiv, bookStatus);
-    populateStorage(array, i);
+    bookCollection.push(array[i]);
+    if (!signedIn) {
+      populateStorage(array, i);
+    }
   }
 }
 
@@ -74,7 +78,7 @@ function addBookToCollection(title, author, pages, status, booksource) {
   let currentIndex = bookCollection.length - 1;
   const newDivOut = document.createElement("div");
   newDivOut.classList.add("book");
-  collection.appendChild(newDivOut);
+  collectiondiv.appendChild(newDivOut);
   const newUl = document.createElement("ul");
   newUl.setAttribute("id", "book" + currentIndex);
   newDivOut.appendChild(newUl);
@@ -115,7 +119,10 @@ function addBookToCollection(title, author, pages, status, booksource) {
 }
 
 function removeBookButton(index, newDiv) {
+  const signedIn = isUserSignedIn();
   const newButton = document.createElement("button");
+  const bookCollectionCopy = Array.from(bookCollection);
+  console.log(bookCollectionCopy);
   newButton.textContent = "×";
   let currentID = "bookremoval" + index;
   newButton.setAttribute("id", currentID);
@@ -124,12 +131,23 @@ function removeBookButton(index, newDiv) {
   newButton.setAttribute("class", "bookRemoval");
   newDiv.appendChild(newButton);
   newButton.addEventListener("click", function () {
-    bookCollection.splice(index, 1);
-    collection.innerHTML = "";
-    displayCollection(bookCollection);
-    removeItemLocalStorage(index);
-    const titleLi = document.querySelectorAll("[data-booktitle]");
-    hideLi(titleLi);
+    if (signedIn) {
+      removeBookFromDB(bookCollection[index]);
+      bookCollectionCopy.splice(index, 1);
+      collectiondiv.innerHTML = "";
+      bookCollection = [];
+      displayCollection(bookCollectionCopy);
+      const titleLi = document.querySelectorAll("[data-booktitle]");
+      hideLi(titleLi);
+    } else {
+      // not sure this is working
+      removeItemLocalStorage(index);
+      bookCollection.splice(index, 1);
+      displayCollection(bookCollection);
+      collectiondiv.innerHTML = "";
+      const titleLi = document.querySelectorAll("[data-booktitle]");
+      hideLi(titleLi);
+    }
   });
 }
 
@@ -290,4 +308,4 @@ window.onload = function () {
   localStorageCheck();
 };
 
-export { addBookToCollection, removeItemLocalStorage };
+export { addBookToCollection, removeItemLocalStorage, displayCollection };

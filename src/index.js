@@ -2,6 +2,7 @@ import "./styles/stylesheet.css";
 import {
   addBookToCollection,
   removeItemLocalStorage,
+  displayCollection,
 } from "./bookconstructor.js";
 import { initializeApp } from "firebase/app";
 import {
@@ -24,6 +25,8 @@ import {
   updateDoc,
   doc,
   serverTimestamp,
+  deleteDoc,
+  where,
 } from "firebase/firestore";
 // import {
 //   getStorage,
@@ -140,6 +143,7 @@ const authStateObserver = function (user) {
     profileDiv.appendChild(namediv);
     signinsuggestion.setAttribute("hidden", "true");
     moveBooksFromStorageToDB();
+    retrieveBooksFromDB();
   } else {
     signinbutton.textContent = "Sign In";
     profileDiv.setAttribute("hidden", "true");
@@ -184,10 +188,10 @@ function isUserSignedIn() {
 async function saveBook(bookinfo) {
   try {
     await addDoc(collection(bookDatabase, "books"), {
-      booktitle: bookinfo.title,
-      bookauthor: bookinfo.author,
-      bookpages: bookinfo.pages,
-      bookstatus: bookinfo.status,
+      title: bookinfo.title,
+      author: bookinfo.author,
+      pages: bookinfo.pages,
+      status: bookinfo.status,
     });
   } catch (error) {
     console.error("Error writing new message to Firebase Database", error);
@@ -200,6 +204,45 @@ const lookForTitleInObjectsArray = function (obj, title) {
   } else {
     return false;
   }
+};
+
+const retrieveBooksFromDB = async function () {
+  const getAllObjectsInDb = await getDocs(collection(bookDatabase, "books"));
+  let arrayOfBooksInStorage = [];
+  getAllObjectsInDb.forEach((doc) => {
+    arrayOfBooksInStorage.push(doc.data());
+  });
+  displayCollection(arrayOfBooksInStorage);
+};
+
+const removeBookFromDB = async function (book) {
+  const booksInStorage = collection(bookDatabase, "books");
+  const booktodelete = query(booksInStorage, where("title", "==", book.title));
+  const querySnapshot = await getDocs(booktodelete);
+  querySnapshot.forEach((book) => {
+    deleteDoc(doc(bookDatabase, "books", book.id));
+  });
+};
+
+const changeBookStatusDB = async function (book) {
+  const currentBookStatus = books.status;
+  let newStatus = "";
+  if (currentBookStatus === "Status: not read") {
+    newStatus = "Status: read";
+  } else {
+    newStatus = "Status: not read";
+  }
+  const booksInStorage = collection(bookDatabase, "books");
+  const booktochange = query(booksInStorage, where("title", "==", book.title));
+  const querySnapshot = await getDocs(booktochange);
+  querySnapshot.forEach((book) => {
+    setDoc(doc(bookDatabase, "books", book.id), {
+      title: book.title,
+      author: book.author,
+      pages: book.pages,
+      status: newstatus,
+    });
+  });
 };
 
 const moveBooksFromStorageToDB = async function () {
@@ -248,7 +291,7 @@ const moveBooksFromStorageToDB = async function () {
 
 initFirebaseAuth();
 
-export { isUserSignedIn, saveBook };
+export { isUserSignedIn, saveBook, removeBookFromDB };
 
 //on signin should add books to database maybe
 // display collection on change in db
