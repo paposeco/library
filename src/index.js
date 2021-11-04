@@ -1,5 +1,8 @@
 import "./styles/stylesheet.css";
-import { addBookToCollection } from "./bookconstructor.js";
+import {
+  addBookToCollection,
+  removeItemLocalStorage,
+} from "./bookconstructor.js";
 import { initializeApp } from "firebase/app";
 import {
   getAuth,
@@ -14,6 +17,7 @@ import {
   addDoc,
   query,
   orderBy,
+  getDocs,
   limit,
   onSnapshot,
   setDoc,
@@ -94,6 +98,7 @@ paraProjectInfoClose.addEventListener("click", function () {
 });
 
 const app = initializeApp(firebaseConfig);
+const bookDatabase = getFirestore();
 
 const auth = getAuth();
 const signIn = async function () {
@@ -122,6 +127,7 @@ signinbutton.addEventListener("click", function () {
 const authStateObserver = function (user) {
   //signed in
   const profileDiv = document.getElementById("profile");
+  const signinsuggestion = document.getElementById("signinsuggestion");
   if (user) {
     profileDiv.removeAttribute("hidden");
     signinbutton.textContent = "Sign Out";
@@ -132,9 +138,12 @@ const authStateObserver = function (user) {
     profilephoto.alt = "profile pic";
     profileDiv.appendChild(profilephoto);
     profileDiv.appendChild(namediv);
+    signinsuggestion.setAttribute("hidden", "true");
+    moveBooksFromStorageToDB();
   } else {
     signinbutton.textContent = "Sign In";
     profileDiv.setAttribute("hidden", "true");
+    signinsuggestion.removeAttribute("hidden");
   }
 };
 
@@ -171,4 +180,75 @@ function isUserSignedIn() {
 
 // fazer um signout. o texto do botao tem de mudar quando o user esta loggedin
 
+//save book to cloud
+async function saveBook(bookinfo) {
+  try {
+    await addDoc(collection(bookDatabase, "books"), {
+      booktitle: bookinfo.title,
+      bookauthor: bookinfo.author,
+      bookpages: bookinfo.pages,
+      bookstatus: bookinfo.status,
+    });
+  } catch (error) {
+    console.error("Error writing new message to Firebase Database", error);
+  }
+}
+
+const lookForTitleInObjectsArray = function (obj, title) {
+  if (obj.title === title) {
+    return true;
+  } else {
+    return false;
+  }
+};
+
+const moveBooksFromStorageToDB = async function () {
+  const booksInLocalStorage = localStorage;
+  if (localStorage.length === 0) {
+    return;
+  }
+  const getAllObjectsInDb = await getDocs(collection(bookDatabase, "books"));
+  let arrayOfBooksInStorage = [];
+  getAllObjectsInDb.forEach((doc) => {
+    arrayOfBooksInStorage.push(doc.data());
+  });
+
+  const numberBooksToAdd = Number(localStorage.length / 4);
+  for (let i = 0; i < numberBooksToAdd; i++) {
+    const bookTitle = localStorage.getItem("title" + i);
+    let bookfoundInDB = false;
+    for (let j = 0; j < arrayOfBooksInStorage.length; j++) {
+      const currentbook = arrayOfBooksInStorage[j];
+      const bookAlreadyInDB = lookForTitleInObjectsArray(
+        currentbook,
+        bookTitle
+      );
+      if (bookAlreadyInDB) {
+        bookfoundInDB = true;
+        break;
+      }
+    }
+    if (bookfoundInDB) {
+      removeItemLocalStorage(i);
+      continue;
+    }
+    const bookAuthor = localStorage.getItem("author" + i).slice(8);
+    const bookPages = localStorage.getItem("pages" + i).slice(7);
+    const bookStatus = localStorage.getItem("status" + i).slice(8);
+    addBookToCollection(
+      bookTitle,
+      bookAuthor,
+      bookPages,
+      bookStatus,
+      "newbook"
+    );
+    removeItemLocalStorage(i);
+  }
+};
+
 initFirebaseAuth();
+
+export { isUserSignedIn, saveBook };
+
+//on signin should add books to database maybe
+// display collection on change in db

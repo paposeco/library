@@ -1,4 +1,5 @@
-import "./styles/stylesheet.css";
+//import "./styles/stylesheet.css";
+import { isUserSignedIn, saveBook } from "./index.js";
 
 function bookInfo(title, author, pages, status) {
   this.title = title;
@@ -31,14 +32,15 @@ const thebelljar = new bookInfo(
   "not read"
 );
 
-let bookCollection = [
-  hobbit,
-  seveneves,
-  thehumancondition,
-  elantris,
-  hyperion,
-  thebelljar,
-];
+// let bookCollection = [
+//   hobbit,
+//   seveneves,
+//   thehumancondition,
+//   elantris,
+//   hyperion,
+//   thebelljar,
+// ];
+let bookCollection = [];
 const collection = document.getElementById("collection");
 
 function displayCollection(array) {
@@ -102,7 +104,12 @@ function addBookToCollection(title, author, pages, status, booksource) {
     });
   });
   if (booksource === "newbook") {
-    populateStorage(bookCollection, currentIndex);
+    const signedIn = isUserSignedIn();
+    if (signedIn) {
+      saveBook(newBook);
+    } else {
+      populateStorage(bookCollection, currentIndex);
+    }
   }
   numberofbooks(bookCollection.length);
 }
@@ -162,9 +169,8 @@ function changeStatus(event, index) {
   if (bookStatus === "Status: not read") {
     bookCollection[index].status = "Status: read";
     const currentBookList = document.getElementById("book" + index);
-    const currentBookListItemStatus = currentBookList.querySelector(
-      "[data-bookstatus]"
-    );
+    const currentBookListItemStatus =
+      currentBookList.querySelector("[data-bookstatus]");
     const span = currentBookList.querySelector("span");
     currentBookListItemStatus.textContent = "Status: read";
     event.target.textContent = "Mark as not read";
@@ -176,9 +182,8 @@ function changeStatus(event, index) {
   } else {
     bookCollection[index].status = "Status: not read";
     const currentBookList = document.getElementById("book" + index);
-    const currentBookListItemStatus = currentBookList.querySelector(
-      "[data-bookstatus]"
-    );
+    const currentBookListItemStatus =
+      currentBookList.querySelector("[data-bookstatus]");
     const span = currentBookList.querySelector("span");
     currentBookListItemStatus.textContent = "Status: not read";
     event.target.textContent = "Mark as read";
@@ -198,11 +203,11 @@ function populateStorage(array, index) {
 }
 
 function localStorageCheck() {
-  if (localStorage.length > 24) {
+  if (localStorage.length > 0) {
     // initial storage
-    const initalBookCollection = bookCollection.length;
+    const initialBookCollection = bookCollection.length;
     const completeCollection = Number(localStorage.length / 4);
-    for (let i = initalBookCollection; i < completeCollection; i++) {
+    for (let i = initialBookCollection; i < completeCollection; i++) {
       let bookTitle = localStorage.getItem("title" + i);
       let bookAuthor = localStorage.getItem("author" + i).slice(8);
       let bookPages = localStorage.getItem("pages" + i).slice(7);
@@ -256,59 +261,9 @@ function hideLi(titleLi) {
   });
 }
 
-// const formDiv = document.getElementById("formdiv");
-// const showFormButton = document.getElementById("bringform");
-// const showFormDiv = document.getElementById("bringformbutton");
-// const inputTitle = document.getElementById("title");
-// const inputAuthor = document.getElementById("author");
-// const inputPages = document.getElementById("pages");
-// const inputStatus = document.getElementById("status");
-// const form = document.getElementById("newbook");
-// const closeForm = document.getElementById("closeform");
-
-// showFormButton.addEventListener("click", function (event) {
-//   formDiv.style.visibility = "visible";
-//   showFormDiv.style.visibility = "hidden";
-// });
-
-// form.addEventListener("submit", function (event) {
-//   addBookToCollection(
-//     inputTitle.value,
-//     inputAuthor.value,
-//     inputPages.value,
-//     inputStatus.value,
-//     "newbook"
-//   );
-//   formDiv.style.visibility = "hidden";
-//   showFormDiv.style.visibility = "visible";
-//   form.reset();
-//   event.preventDefault();
-// });
-
-// closeForm.addEventListener("click", function (event) {
-//   form.reset();
-//   formDiv.style.visibility = "hidden";
-//   showFormDiv.style.visibility = "visible";
-// });
-
 const litotal = document.getElementById("totalnumberofbooks");
 const liread = document.getElementById("numberreadbooks");
 const liunread = document.getElementById("numberofunreadbooks");
-// const buttoni = document.getElementById("buttoni");
-// const paraProjectInfo = document.getElementById("projectinfo");
-// const paraProjectInfoClose = document.getElementById("closeinfo");
-
-// buttoni.addEventListener("click", function () {
-//   paraProjectInfo.style.visibility = "visible";
-//   paraProjectInfoClose.style.visibility = "visible";
-//   buttoni.style.visibility = "hidden";
-// });
-
-// paraProjectInfoClose.addEventListener("click", function () {
-//   paraProjectInfo.style.visibility = "hidden";
-//   paraProjectInfoClose.style.visibility = "hidden";
-//   buttoni.style.visibility = "visible";
-// });
 
 function numberofbooks(arraylength) {
   let read = 0;
@@ -327,7 +282,7 @@ function numberofbooks(arraylength) {
 }
 
 // this should be on index.js
-displayCollection(bookCollection);
+//displayCollection(bookCollection);
 
 window.onload = function () {
   const titleLi = document.querySelectorAll("[data-booktitle]");
@@ -335,4 +290,4 @@ window.onload = function () {
   localStorageCheck();
 };
 
-export { addBookToCollection };
+export { addBookToCollection, removeItemLocalStorage };
