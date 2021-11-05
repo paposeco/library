@@ -10,4 +10,4 @@ Otherwise, I am happy with the result.
 
 ## Update November 2021
 
-Integrated my Book Library implemenation with Firebase. Localstorage still works if the user isn't signed in. Fixed some mistakes I found while reviewing my code, but left it as was for the most part. Today I would have implemented it diferently, but I want to kept it as is, as a reminder of how this learning front-end process began.
+Integrated my Book Library implementation with Firebase. Localstorage still works if the user isn't signed in. Fixed some mistakes I found while reviewing my code, but left it as was for the most part. Today I would have implemented it differently, but I want to kept it as is, as a reminder of how this learning front-end process began.
