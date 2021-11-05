@@ -5,11 +5,13 @@ import {
   changeBookStatusDB,
 } from "./index.js";
 
-function bookInfo(title, author, pages, status) {
+let bookCollection = [];
+function bookInfo(title, author, pages, status, bookid) {
   this.title = title;
   this.author = "Author: " + author;
   this.pages = "Pages: " + pages;
   this.status = "Status: " + status;
+  this.bookid = "book" + bookCollection.length;
   this.info = function () {
     if (status === "read") {
       return `${title} by ${author}, ${pages} pages, ${status}`;
@@ -37,7 +39,6 @@ const thebelljar = new bookInfo(
   "not read"
 );
 
-let bookCollection = [];
 const collectiondiv = document.getElementById("collection");
 
 function displayCollection(array) {
@@ -202,9 +203,8 @@ function changeStatus(event, index) {
   } else {
     const bookStatus = bookCollection[index].status;
     const currentBookList = document.getElementById("book" + index);
-    const currentBookListItemStatus = currentBookList.querySelector(
-      "[data-bookstatus]"
-    );
+    const currentBookListItemStatus =
+      currentBookList.querySelector("[data-bookstatus]");
     const span = currentBookList.querySelector("span");
 
     if (bookStatus === "Status: not read") {
@@ -322,5 +322,3 @@ window.onload = function () {
 };
 
 export { addBookToCollection, removeItemLocalStorage, displayCollection };
-
-//on signout remove profile photo and name

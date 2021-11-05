@@ -23,6 +23,8 @@ import {
   doc,
   deleteDoc,
   where,
+  collectionGroup,
+  setDoc,
 } from "firebase/firestore";
 
 const firebaseConfig = {
@@ -89,7 +91,7 @@ paraProjectInfoClose.addEventListener("click", function () {
 });
 
 const app = initializeApp(firebaseConfig);
-const bookDatabase = getFirestore();
+const userDatabase = getFirestore();
 
 const auth = getAuth();
 const signIn = async function () {
@@ -123,8 +125,10 @@ const authStateObserver = function (user) {
     profileDiv.removeAttribute("hidden");
     signinbutton.textContent = "Sign Out";
     const namediv = document.createElement("p");
+    namediv.setAttribute("id", "namediv");
     namediv.textContent = getUserName();
     const profilephoto = document.createElement("img");
+    profilephoto.setAttribute("id", "profilephoto");
     profilephoto.src = getProfilePicUrl();
     profilephoto.alt = "profile pic";
     profileDiv.appendChild(profilephoto);
@@ -136,6 +140,11 @@ const authStateObserver = function (user) {
     signinbutton.textContent = "Sign In";
     profileDiv.setAttribute("hidden", "true");
     signinsuggestion.removeAttribute("hidden");
+    const currentprofilephoto = document.getElementById("profilephoto");
+    currentprofilephoto.remove();
+    const currentnamediv = document.getElementById("namediv");
+    currentnamediv.remove();
+    displayCollection([]);
   }
 };
 
@@ -157,12 +166,21 @@ function isUserSignedIn() {
 //save book to cloud
 const saveBook = async function (bookinfo) {
   try {
-    await addDoc(collection("users"), {
-      title: bookinfo.title,
-      author: bookinfo.author,
-      pages: bookinfo.pages,
-      status: bookinfo.status,
-    });
+    await setDoc(
+      doc(
+        userDatabase,
+        "users",
+        auth.currentUser.uid,
+        "books",
+        bookinfo.bookid
+      ),
+      {
+        title: bookinfo.title,
+        author: bookinfo.author,
+        pages: bookinfo.pages,
+        status: bookinfo.status,
+      }
+    );
   } catch (error) {
     console.error("Error writing new message to Firebase Database", error);
   }
@@ -177,7 +195,10 @@ const lookForTitleInObjectsArray = function (obj, title) {
 };
 
 const retrieveBooksFromDB = async function () {
-  const getAllObjectsInDb = await getDocs(collection(bookDatabase, "books"));
+  const userID = auth.currentUser.uid;
+  const getAllObjectsInDb = await getDocs(
+    collection(userDatabase, "users", userID, "books")
+  );
   let arrayOfBooksInStorage = [];
   getAllObjectsInDb.forEach((doc) => {
     arrayOfBooksInStorage.push(doc.data());
@@ -186,19 +207,19 @@ const retrieveBooksFromDB = async function () {
 };
 
 const removeBookFromDB = async function (book) {
-  const booksInStorage = collection(bookDatabase, "books");
+  const userId = auth.currentUser.uid;
+  const booksInStorage = collection(userDatabase, "users", userId, "books");
   const booktodelete = query(booksInStorage, where("title", "==", book.title));
   const querySnapshot = await getDocs(booktodelete);
   querySnapshot.forEach((book) => {
-    deleteDoc(doc(bookDatabase, "books", book.id));
+    deleteDoc(doc(userDatabase, "users", userId, "books", book.id));
   });
 };
 
 const changeBookStatusDB = async function (currentbook, index) {
   const currentBookList = document.getElementById("book" + index);
-  const currentBookListItemStatus = currentBookList.querySelector(
-    "[data-bookstatus]"
-  );
+  const currentBookListItemStatus =
+    currentBookList.querySelector("[data-bookstatus]");
   const span = currentBookList.querySelector("span");
   const currentBookStatus = currentbook.status;
   let newStatus = "";
@@ -217,14 +238,15 @@ const changeBookStatusDB = async function (currentbook, index) {
     span.classList.remove("statusRead");
     span.classList.add("statusNot");
   }
-  const booksInStorage = collection(bookDatabase, "books");
+  const userId = auth.currentUser.uid;
+  const booksInStorage = collection(userDatabase, "users", userId, "books");
   const booktochange = query(
     booksInStorage,
     where("title", "==", currentbook.title)
   );
   const querySnapshot = await getDocs(booktochange);
   querySnapshot.forEach((book) => {
-    updateDoc(doc(bookDatabase, "books", book.id), {
+    updateDoc(doc(userDatabase, "users", userId, "books", book.id), {
       status: newStatus,
     });
   });
@@ -235,7 +257,9 @@ const moveBooksFromStorageToDB = async function () {
   if (localStorage.length === 0) {
     return;
   }
-  const getAllObjectsInDb = await getDocs(collection(bookDatabase, "books"));
+  const getAllObjectsInDb = await getDocs(
+    collection(userDatabase, "users", userId, "books")
+  );
   let arrayOfBooksInStorage = [];
   getAllObjectsInDb.forEach((doc) => {
     arrayOfBooksInStorage.push(doc.data());
