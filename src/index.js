@@ -157,7 +157,7 @@ function isUserSignedIn() {
 //save book to cloud
 const saveBook = async function (bookinfo) {
   try {
-    await addDoc(collection(bookDatabase, "books"), {
+    await addDoc(collection("users"), {
       title: bookinfo.title,
       author: bookinfo.author,
       pages: bookinfo.pages,

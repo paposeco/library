@@ -322,3 +322,5 @@ window.onload = function () {
 };
 
 export { addBookToCollection, removeItemLocalStorage, displayCollection };
+
+//on signout remove profile photo and name
