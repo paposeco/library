@@ -19,21 +19,17 @@ body {
 }
 
 h1 {
-  /* color: #eef4ae; */
   color: #e0eb6b;
   text-shadow: 1px 1px 1px grey;
-  /* color: #d2e228; */
   font-size: 40px;
 }
 
 #collection {
   display: flex;
   flex-direction: row;
-  justify-content: flex-start;
-  /* gap: 20px; */
-  height: 100%;
+  align-items: flex-start;
   flex-wrap: wrap;
-  /* flex-grow: 1; */
+  min-height: 55vh;
 }
 
 .book {
@@ -63,8 +59,6 @@ ul {
 [data-bookpages],
 [data-bookstatus] {
   display: none;
-  /* font-family: Fjord One; */
-  /* font-family: "Antonio", sans-serif; */
   font-family: "Roboto Condensed", sans-serif;
   font-size: 18px;
 }
@@ -129,7 +123,6 @@ li > span {
   text-align: right;
   padding-right: 5px;
   padding-left: 10px;
-  /* margin-left: 20px; */
   font-size: 12px;
 }
 
@@ -154,14 +147,9 @@ ul > div {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  /* text-align: right; */
   margin: 10px 20px;
   align-items: center;
   margin-bottom: 0;
-}
-
-#closeformdiv > button {
-  /* line-height: 1.5em; */
 }
 
 #bringformbutton {
@@ -191,7 +179,6 @@ form {
 #currentcollection {
   display: flex;
   flex-direction: column;
-  /* height: 80vh; */
   margin-top: 10vh;
 }
 
@@ -293,7 +280,6 @@ footer a:visited {
 
 #info > h2 {
   color: #e0eb6b;
-  /* color: #d2e228; */
   text-shadow: 1px 1px 1px grey;
   font-size: 30px;
 }
@@ -314,9 +300,7 @@ footer a:visited {
   position: absolute;
   top: 8px;
   right: 10px;
-  /* background-color: #f9fbe6; */
   width: 14px;
-  /* border: solid 1px black; */
   padding: 0;
   text-align: center;
   background-color: #e5ee81;

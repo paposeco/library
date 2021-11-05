@@ -17,25 +17,13 @@ import {
   collection,
   addDoc,
   query,
-  orderBy,
   getDocs,
-  limit,
   onSnapshot,
-  setDoc,
   updateDoc,
   doc,
-  serverTimestamp,
   deleteDoc,
   where,
 } from "firebase/firestore";
-// import {
-//   getStorage,
-//   ref,
-//   uploadBytesResumable,
-//   getDownloadURL,
-// } from 'firebase/storage';
-// import { getMessaging, getToken, onMessage } from 'firebase/messaging';
-// import { getPerformance } from 'firebase/performance';
 
 const firebaseConfig = {
   apiKey: "AIzaSyAWgyV7syIIbKPZIMoHIU1M91jJ4ukwBUA",
@@ -162,30 +150,12 @@ function getUserName() {
 }
 
 // Returns true if a user is signed-in.
-// not used yet
 function isUserSignedIn() {
   return !!getAuth().currentUser;
 }
 
-// const auth = getAuth();
-// onAuthStateChanged(auth, (user) => {
-//   if (user) {
-//     // User is signed in, see docs for a list of available properties
-//     // https://firebase.google.com/docs/reference/js/firebase.User
-//     const uid = user.uid;
-//     // ...
-//   } else {
-//     // User is signed out
-//     // ...
-//   }
-// });
-
-//if logged in saves to cloud, else saves to local storage
-
-// fazer um signout. o texto do botao tem de mudar quando o user esta loggedin
-
 //save book to cloud
-async function saveBook(bookinfo) {
+const saveBook = async function (bookinfo) {
   try {
     await addDoc(collection(bookDatabase, "books"), {
       title: bookinfo.title,
@@ -196,7 +166,7 @@ async function saveBook(bookinfo) {
   } catch (error) {
     console.error("Error writing new message to Firebase Database", error);
   }
-}
+};
 
 const lookForTitleInObjectsArray = function (obj, title) {
   if (obj.title === title) {
@@ -224,23 +194,38 @@ const removeBookFromDB = async function (book) {
   });
 };
 
-const changeBookStatusDB = async function (book) {
-  const currentBookStatus = books.status;
+const changeBookStatusDB = async function (currentbook, index) {
+  const currentBookList = document.getElementById("book" + index);
+  const currentBookListItemStatus = currentBookList.querySelector(
+    "[data-bookstatus]"
+  );
+  const span = currentBookList.querySelector("span");
+  const currentBookStatus = currentbook.status;
   let newStatus = "";
   if (currentBookStatus === "Status: not read") {
     newStatus = "Status: read";
+    currentBookListItemStatus.textContent = "Status: read";
+    event.target.textContent = "Mark as not read";
+    span.textContent = "read";
+    span.classList.remove("statusNot");
+    span.classList.add("statusRead");
   } else {
     newStatus = "Status: not read";
+    currentBookListItemStatus.textContent = "Status: not read";
+    event.target.textContent = "Mark as read";
+    span.textContent = "not read";
+    span.classList.remove("statusRead");
+    span.classList.add("statusNot");
   }
   const booksInStorage = collection(bookDatabase, "books");
-  const booktochange = query(booksInStorage, where("title", "==", book.title));
+  const booktochange = query(
+    booksInStorage,
+    where("title", "==", currentbook.title)
+  );
   const querySnapshot = await getDocs(booktochange);
   querySnapshot.forEach((book) => {
-    setDoc(doc(bookDatabase, "books", book.id), {
-      title: book.title,
-      author: book.author,
-      pages: book.pages,
-      status: newstatus,
+    updateDoc(doc(bookDatabase, "books", book.id), {
+      status: newStatus,
     });
   });
 };
@@ -291,7 +276,4 @@ const moveBooksFromStorageToDB = async function () {
 
 initFirebaseAuth();
 
-export { isUserSignedIn, saveBook, removeBookFromDB };
-
-//on signin should add books to database maybe
-// display collection on change in db
+export { isUserSignedIn, saveBook, removeBookFromDB, changeBookStatusDB };

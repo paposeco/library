@@ -7,3 +7,7 @@ This web app lets you keep track of your book collection. There are 6 books as e
 After looking at other people's projects, I have realized that I once again went for a more whimsical look, instead of a corporate one. It was fun, but on the next project I will try to keep it down.
 
 Otherwise, I am happy with the result.
+
+## Update November 2021
+
+Integrated my Book Library implemenation with Firebase. Localstorage still works if the user isn't signed in. Fixed some mistakes I found while reviewing my code, but left it as was for the most part. Today I would have implemented it diferently, but I want to kept it as is, as a reminder of how this learning front-end process began.

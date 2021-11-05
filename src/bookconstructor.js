@@ -1,5 +1,9 @@
-//import "./styles/stylesheet.css";
-import { isUserSignedIn, saveBook, removeBookFromDB } from "./index.js";
+import {
+  isUserSignedIn,
+  saveBook,
+  removeBookFromDB,
+  changeBookStatusDB,
+} from "./index.js";
 
 function bookInfo(title, author, pages, status) {
   this.title = title;
@@ -15,6 +19,7 @@ function bookInfo(title, author, pages, status) {
   };
 }
 
+//old book collection
 const hobbit = new bookInfo("The Hobbit", "J.R.R. Tolkien", "295", "read");
 const seveneves = new bookInfo("Seveneves", " Neal Stephenson", "880", "read");
 const elantris = new bookInfo("Elantris", "Brandon Sanderson", "638", "read");
@@ -32,14 +37,6 @@ const thebelljar = new bookInfo(
   "not read"
 );
 
-// let bookCollection = [
-//   hobbit,
-//   seveneves,
-//   thehumancondition,
-//   elantris,
-//   hyperion,
-//   thebelljar,
-// ];
 let bookCollection = [];
 const collectiondiv = document.getElementById("collection");
 
@@ -56,20 +53,37 @@ function displayCollection(array) {
     let bookAuthor = array[i].author;
     let bookPages = array[i].pages;
     let bookStatus = array[i].status;
-    createLi(newUl, bookTitle, i, "booktitle");
+    const span = document.createElement("span");
+    const liTitle = createLi(newUl, bookTitle, i, "booktitle");
     createLi(newUl, bookAuthor, i, "bookauthor");
     createLi(newUl, bookPages, i, "bookpages");
     createLi(newUl, bookStatus, i, "bookstatus");
+    if (bookStatus.slice(8) === "read") {
+      span.classList.add("statusRead");
+    } else {
+      span.classList.add("statusNot");
+    }
+    span.textContent = bookStatus.slice(8);
+    liTitle.appendChild(span);
     const newDiv = document.createElement("div");
     newDiv.classList.add("bookButtons");
     newUl.appendChild(newDiv);
     removeBookButton(i, newDiv);
     changeStatusButton(i, newDiv, bookStatus);
+    // toggles visibility
+    liTitle.addEventListener("click", function () {
+      const li = newUl.childNodes;
+      li.forEach(function (element) {
+        let classes = element.classList;
+        classes.toggle("visibleClass");
+      });
+    });
     bookCollection.push(array[i]);
     if (!signedIn) {
       populateStorage(array, i);
     }
   }
+  numberofbooks(bookCollection.length);
 }
 
 function addBookToCollection(title, author, pages, status, booksource) {
@@ -121,8 +135,6 @@ function addBookToCollection(title, author, pages, status, booksource) {
 function removeBookButton(index, newDiv) {
   const signedIn = isUserSignedIn();
   const newButton = document.createElement("button");
-  const bookCollectionCopy = Array.from(bookCollection);
-  console.log(bookCollectionCopy);
   newButton.textContent = "×";
   let currentID = "bookremoval" + index;
   newButton.setAttribute("id", currentID);
@@ -131,6 +143,7 @@ function removeBookButton(index, newDiv) {
   newButton.setAttribute("class", "bookRemoval");
   newDiv.appendChild(newButton);
   newButton.addEventListener("click", function () {
+    const bookCollectionCopy = Array.from(bookCollection);
     if (signedIn) {
       removeBookFromDB(bookCollection[index]);
       bookCollectionCopy.splice(index, 1);
@@ -140,11 +153,11 @@ function removeBookButton(index, newDiv) {
       const titleLi = document.querySelectorAll("[data-booktitle]");
       hideLi(titleLi);
     } else {
-      // not sure this is working
       removeItemLocalStorage(index);
-      bookCollection.splice(index, 1);
-      displayCollection(bookCollection);
+      bookCollectionCopy.splice(index, 1);
       collectiondiv.innerHTML = "";
+      bookCollection = [];
+      displayCollection(bookCollectionCopy);
       const titleLi = document.querySelectorAll("[data-booktitle]");
       hideLi(titleLi);
     }
@@ -183,33 +196,36 @@ function changeStatusButton(index, newDiv, bookstatus) {
 }
 
 function changeStatus(event, index) {
-  bookStatus = bookCollection[index].status;
-  if (bookStatus === "Status: not read") {
-    bookCollection[index].status = "Status: read";
-    const currentBookList = document.getElementById("book" + index);
-    const currentBookListItemStatus =
-      currentBookList.querySelector("[data-bookstatus]");
-    const span = currentBookList.querySelector("span");
-    currentBookListItemStatus.textContent = "Status: read";
-    event.target.textContent = "Mark as not read";
-    span.textContent = "read";
-    span.classList.remove("statusNot");
-    span.classList.add("statusRead");
-    const storageStatusNot = "status" + index;
-    localStorage.setItem(storageStatusNot, "Status: read");
+  const signedIn = isUserSignedIn();
+  if (signedIn) {
+    changeBookStatusDB(bookCollection[index], index);
   } else {
-    bookCollection[index].status = "Status: not read";
+    const bookStatus = bookCollection[index].status;
     const currentBookList = document.getElementById("book" + index);
-    const currentBookListItemStatus =
-      currentBookList.querySelector("[data-bookstatus]");
+    const currentBookListItemStatus = currentBookList.querySelector(
+      "[data-bookstatus]"
+    );
     const span = currentBookList.querySelector("span");
-    currentBookListItemStatus.textContent = "Status: not read";
-    event.target.textContent = "Mark as read";
-    span.textContent = "not read";
-    span.classList.remove("statusRead");
-    span.classList.add("statusNot");
-    const storageStatus = "status" + index;
-    localStorage.setItem(storageStatus, "Status: not read");
+
+    if (bookStatus === "Status: not read") {
+      bookCollection[index].status = "Status: read";
+      currentBookListItemStatus.textContent = "Status: read";
+      event.target.textContent = "Mark as not read";
+      span.textContent = "read";
+      span.classList.remove("statusNot");
+      span.classList.add("statusRead");
+      const storageStatusNot = "status" + index;
+      localStorage.setItem(storageStatusNot, "Status: read");
+    } else {
+      bookCollection[index].status = "Status: not read";
+      currentBookListItemStatus.textContent = "Status: not read";
+      event.target.textContent = "Mark as read";
+      span.textContent = "not read";
+      span.classList.remove("statusRead");
+      span.classList.add("statusNot");
+      const storageStatus = "status" + index;
+      localStorage.setItem(storageStatus, "Status: not read");
+    }
   }
 }
 
@@ -298,9 +314,6 @@ function numberofbooks(arraylength) {
   liread.textContent = "Books read: " + read;
   liunread.textContent = "Want to read: " + unread;
 }
-
-// this should be on index.js
-//displayCollection(bookCollection);
 
 window.onload = function () {
   const titleLi = document.querySelectorAll("[data-booktitle]");
